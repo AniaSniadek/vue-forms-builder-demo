@@ -1,3 +1,3 @@
-# vitejs-vite-kvemje
+# Vue forms builder demo
 
-[Edit on StackBlitz ⚡️](https://stackblitz.com/edit/vitejs-vite-kvemje)
+[Edit on StackBlitz ⚡️](https://stackblitz.com/edit/vue-forms-builder-demo)
