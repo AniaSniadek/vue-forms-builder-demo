@@ -11,7 +11,7 @@ const form = ref(
       phoneContact: [false, Validators.requiredTrue],
       mailContact: false,
     },
-    price: [null, [Validators.min(0), Validators.max(100)]],
+    age: [null, [Validators.min(0), Validators.max(100)]],
   })
 );
 const nameControl = ref(
@@ -57,7 +57,7 @@ const phoneValidationMsg = computed(() => {
       return 'This field is required';
     }
     case form.value.get('phone').error['pattern']: {
-      return 'Invalid value';
+      return 'Invalid value - the number should only contain numbers';
     }
     default: {
       return '';
@@ -65,13 +65,12 @@ const phoneValidationMsg = computed(() => {
   }
 });
 
-const priceValidationMsg = computed(() => {
+const ageValidationMsg = computed(() => {
   if (
-    form.value.get('price').touched &&
-    (form.value.get('price').error['min'] ||
-      form.value.get('price').error['max'])
+    form.value.get('age').touched &&
+    (form.value.get('age').error['min'] || form.value.get('age').error['max'])
   ) {
-    return 'Invalid value - the price should be between 0 and 100';
+    return 'Invalid value - the age should be between 0 and 100';
   }
   return '';
 });
@@ -89,67 +88,140 @@ function onSumbit() {
 </script>
 
 <template>
-  <form class="form" @submit.prevent="onSumbit">
-    <div class="form__element">
-      <input type="text" v-model="nameControl.value" placeholder="Name" />
-      <span v-if="nameValidationMsg" class="form-error">{{
-        nameValidationMsg
-      }}</span>
-    </div>
-    <div class="form__element">
-      <input
-        type="text"
-        v-model="form.get('phone').value"
-        placeholder="Phone number"
-      />
-      <span v-if="phoneValidationMsg" class="form-error">{{
-        phoneValidationMsg
-      }}</span>
-    </div>
-    <div class="form__element">
-      <input
-        type="text"
-        v-model="form.get('price').value"
-        placeholder="Price"
-      />
-      <span v-if="priceValidationMsg" class="form-error">{{
-        priceValidationMsg
-      }}</span>
-    </div>
-    <div class="form__element">
-      <div>
-        <input type="checkbox" v-model="acceptAll" />
-        <label> I accept all statements</label>
-      </div>
-      <div>
+  <div class="app-template">
+    <form class="form" @submit.prevent="onSumbit">
+      <div class="form__element">
         <input
-          type="checkbox"
-          v-model="form.get('consent.phoneContact').value"
+          class="form__element-input"
+          type="text"
+          v-model="nameControl.value"
+          placeholder="NAME"
         />
-        <label
-          :class="
-            form.get('consent.phoneContact').touched &&
-            form.get('consent.phoneContact').error['required'] &&
-            'form-error'
-          "
-        >
-          I agree to be contacted by phone</label
-        >
+        <div class="form__error">{{ nameValidationMsg }}</div>
       </div>
-      <div>
+      <div class="form__element">
         <input
-          type="checkbox"
-          v-model="form.get('consent.mailContact').value"
+          class="form__element-input"
+          type="text"
+          v-model="form.get('phone').value"
+          placeholder="PHONE NUMBER"
         />
-        <label> I agree to be contacted by e-mail</label>
+        <div class="form__error">{{ phoneValidationMsg }}</div>
       </div>
-    </div>
-    <button type="submit">Send</button>
-  </form>
+      <div class="form__element">
+        <input
+          class="form__element-input"
+          type="text"
+          v-model="form.get('age').value"
+          placeholder="AGE"
+        />
+        <div class="form__error">{{ ageValidationMsg }}</div>
+      </div>
+      <div class="form__element">
+        <div>
+          <input type="checkbox" v-model="acceptAll" />
+          <label class="form__element-label"> I accept all statements</label>
+        </div>
+        <div>
+          <input
+            type="checkbox"
+            v-model="form.get('consent.phoneContact').value"
+          />
+          <label
+            :class="
+              form.get('consent.phoneContact').touched &&
+              form.get('consent.phoneContact').error['required'] &&
+              'form__error-checkbox'
+            "
+            class="form__element-label"
+          >
+            I agree to be contacted by phone</label
+          >
+        </div>
+        <div>
+          <input
+            type="checkbox"
+            v-model="form.get('consent.mailContact').value"
+          />
+          <label class="form__element-label">
+            I agree to be contacted by e-mail</label
+          >
+        </div>
+      </div>
+      <button class="form__button" type="submit">Send</button>
+    </form>
+  </div>
 </template>
 
 <style>
-.form-error {
-  color: red;
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@500;700&display=swap');
+
+body {
+  margin: 0;
+  box-sizing: border-box;
+  background-color: #f2f2f2;
+}
+
+.app-template {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-family: 'Roboto', sans-serif;
+  align-items: center;
+}
+
+.form__error {
+  font-size: 12px;
+  text-align: right;
+  padding: 5px 20px 0 20px;
+  height: 20px;
+  color: #c11f1f;
+}
+
+.form__element-input {
+  width: 300px;
+  display: block;
+  height: 47px;
+  padding: 0 24px;
+  font-size: 13px;
+  border: none;
+  background: #fff;
+  border-radius: 31px;
+  color: #8f8fa1;
+}
+
+.form__element-label {
+  color: #212529;
+  font-size: 15px;
+}
+
+.form__error-checkbox {
+  color: #c11f1f;
+}
+
+.form__button {
+  border: none;
+  width: 133px;
+  height: 47px;
+  border-radius: 25px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  background: #212529;
+  font-size: 15px;
+  color: #fff;
+  box-shadow: 0 0 1px rgb(0 0 0 / 0%);
+  margin-top: 20px;
 }
 </style>
