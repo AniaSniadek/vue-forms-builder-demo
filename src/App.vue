@@ -4,6 +4,9 @@ import { FormBuilder, Validators } from 'vue-forms-builder';
 
 const PHONE_PATTERN = new RegExp('^[0-9]{9}$');
 
+/**
+ * Create form group using FormBuilder
+ */
 const form = ref(
   FormBuilder.group({
     phone: [null, [Validators.required, Validators.pattern(PHONE_PATTERN)]],
@@ -14,6 +17,9 @@ const form = ref(
     age: [null, [Validators.min(0), Validators.max(100)]],
   })
 );
+/**
+ * Create form control using FormBuilder
+ */
 const nameControl = ref(
   FormBuilder.control(null, [
     Validators.required,
@@ -23,6 +29,11 @@ const nameControl = ref(
 );
 const acceptAll = ref(false);
 
+/**
+ * Watcher for listening on acceptAll value change.
+ * We set our consent values based on the acceptAll value
+ * and we are using patchValue method, so we can change it in our form
+ */
 watch(acceptAll, (value) => {
   form.value.get('consent').patchValue({
     phoneContact: value,
@@ -30,6 +41,10 @@ watch(acceptAll, (value) => {
   });
 });
 
+/**
+ * Computed for listening if nameControl has any error if value changes.
+ * Based on the given error, we return the appropriate text value
+ */
 const nameValidationMsg = computed(() => {
   if (!nameControl.value.touched) return '';
 
