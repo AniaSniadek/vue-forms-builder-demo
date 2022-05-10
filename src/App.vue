@@ -65,11 +65,24 @@ const phoneValidationMsg = computed(() => {
   }
 });
 
+const priceValidationMsg = computed(() => {
+  if (
+    form.value.get('price').touched &&
+    (form.value.get('price').error['min'] ||
+      form.value.get('price').error['max'])
+  ) {
+    return 'Invalid value - the price should be between 0 and 100';
+  }
+  return '';
+});
+
 function onSumbit() {
-  if (form.value.valid) {
+  if (nameControl.value.valid && form.value.valid) {
     acceptAll.value = false;
+    nameControl.value.reset();
     form.value.reset();
   } else {
+    nameControl.value.markAsTouched();
     form.value.markAllAsTouched();
   }
 }
@@ -99,6 +112,9 @@ function onSumbit() {
         v-model="form.get('price').value"
         placeholder="Price"
       />
+      <span v-if="priceValidationMsg" class="form-error">{{
+        priceValidationMsg
+      }}</span>
     </div>
     <div class="form__element">
       <div>
