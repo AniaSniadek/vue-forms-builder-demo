@@ -12,10 +12,15 @@ const form = ref(
       mailContact: false,
     },
     price: [null, [Validators.min(0), Validators.max(100)]],
-    name: [null, [Validators.minLength(3), Validators.maxLength(10)]],
   })
 );
-const control = ref(FormBuilder.control(null));
+const nameControl = ref(
+  FormBuilder.control(null, [
+    Validators.required,
+    Validators.minLength(3),
+    Validators.maxLength(15),
+  ])
+);
 const acceptAll = ref(false);
 
 watch(acceptAll, () => {
@@ -25,26 +30,42 @@ watch(acceptAll, () => {
   });
 });
 
-const phoneValidationMsg = computed(() => {
-  if (form.value.get('phone').touched) {
-    switch (true) {
-      case form.value.get('phone').error['required']: {
-        return 'To pole jest wymagane';
-      }
-      case form.value.get('phone').error['pattern']: {
-        return 'Niepoprawna wartość';
-      }
-      default: {
-        return '';
-      }
+const nameValidationMsg = computed(() => {
+  if (!nameControl.value.touched) return '';
+
+  switch (true) {
+    case nameControl.value.error['required']: {
+      return 'This field is required';
     }
-  } else {
-    return '';
+    case nameControl.value.error['minLength']: {
+      return 'The given name is too short';
+    }
+    case nameControl.value.error['maxLength']: {
+      return 'The given name is too long';
+    }
+    default: {
+      return '';
+    }
+  }
+});
+
+const phoneValidationMsg = computed(() => {
+  if (!form.value.get('phone').touched) return '';
+
+  switch (true) {
+    case form.value.get('phone').error['required']: {
+      return 'This field is required';
+    }
+    case form.value.get('phone').error['pattern']: {
+      return 'Invalid value';
+    }
+    default: {
+      return '';
+    }
   }
 });
 
 function onSumbit() {
-  console.log(control.value);
   if (form.value.valid) {
     acceptAll.value = false;
     form.value.reset();
@@ -57,24 +78,32 @@ function onSumbit() {
 <template>
   <form class="form" @submit.prevent="onSumbit">
     <div class="form__element">
-      <input type="text" v-model="control.value" />
+      <input type="text" v-model="nameControl.value" placeholder="Name" />
+      <span v-if="nameValidationMsg" class="form-error">{{
+        nameValidationMsg
+      }}</span>
     </div>
     <div class="form__element">
-      <input type="text" v-model="form.get('name').value" />
-    </div>
-    <div class="form__element">
-      <input type="text" v-model="form.get('phone').value" />
+      <input
+        type="text"
+        v-model="form.get('phone').value"
+        placeholder="Phone number"
+      />
       <span v-if="phoneValidationMsg" class="form-error">{{
         phoneValidationMsg
       }}</span>
     </div>
     <div class="form__element">
-      <input type="text" v-model="form.get('price').value" />
+      <input
+        type="text"
+        v-model="form.get('price').value"
+        placeholder="Price"
+      />
     </div>
     <div class="form__element">
       <div>
         <input type="checkbox" v-model="acceptAll" />
-        <label>Akceptuje wszystkie oświadczenia</label>
+        <label> I accept all statements</label>
       </div>
       <div>
         <input
@@ -87,7 +116,8 @@ function onSumbit() {
             form.get('consent.phoneContact').error['required'] &&
             'form-error'
           "
-          >Zgadzam się na kontakt telefoniczny</label
+        >
+          I agree to be contacted by phone</label
         >
       </div>
       <div>
@@ -95,10 +125,10 @@ function onSumbit() {
           type="checkbox"
           v-model="form.get('consent.mailContact').value"
         />
-        <label>Zgadzam się na kontakt mailowy</label>
+        <label> I agree to be contacted by e-mail</label>
       </div>
     </div>
-    <button type="submit">Wyślij</button>
+    <button type="submit">Send</button>
   </form>
 </template>
 
