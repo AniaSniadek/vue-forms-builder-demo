@@ -2,7 +2,7 @@
 import { ref, computed, watch } from 'vue';
 import { FormBuilder, Validators } from 'vue-forms-builder';
 
-const PHONE_PATTERN = new RegExp('^[0-9]{9,12}$');
+const PHONE_PATTERN = new RegExp('^[0-9]{9}$');
 
 const form = ref(
   FormBuilder.group({
@@ -23,10 +23,10 @@ const nameControl = ref(
 );
 const acceptAll = ref(false);
 
-watch(acceptAll, () => {
+watch(acceptAll, (value) => {
   form.value.get('consent').patchValue({
-    phoneContact: acceptAll.value,
-    mailContact: acceptAll.value,
+    phoneContact: value,
+    mailContact: value,
   });
 });
 
