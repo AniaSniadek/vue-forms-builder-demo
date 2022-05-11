@@ -5,7 +5,9 @@ import { FormBuilder, Validators } from 'vue-forms-builder';
 const PHONE_PATTERN = new RegExp('^[0-9]{9}$');
 
 /**
- * Create form group using FormBuilder
+ * Create form group using FormBuilder.
+ * Inside we have controls with value and validators (optionaly).
+ * We can also add form group inside
  */
 const form = ref(
   FormBuilder.group({
@@ -18,7 +20,8 @@ const form = ref(
   })
 );
 /**
- * Create form control using FormBuilder
+ * Create form control using FormBuilder.
+ * Here we just need to add value and validators (optionaly)
  */
 const nameControl = ref(
   FormBuilder.control(null, [
@@ -27,6 +30,7 @@ const nameControl = ref(
     Validators.maxLength(15),
   ])
 );
+
 const acceptAll = ref(false);
 
 /**
@@ -43,7 +47,7 @@ watch(acceptAll, (value) => {
 
 /**
  * Computed for listening if nameControl has any error if value changes.
- * Based on the given error, we return the appropriate text value
+ * Based on the given error, it returns the appropriate text value
  */
 const nameValidationMsg = computed(() => {
   if (!nameControl.value.touched) return '';
@@ -64,6 +68,10 @@ const nameValidationMsg = computed(() => {
   }
 });
 
+/**
+ * Computed for listening if phone control has any error if value changes.
+ * Based on the given error, it returns the appropriate text value
+ */
 const phoneValidationMsg = computed(() => {
   if (!form.value.get('phone').touched) return '';
 
@@ -80,6 +88,10 @@ const phoneValidationMsg = computed(() => {
   }
 });
 
+/**
+ * Computed for listening if price control has any error if value changes.
+ * Based on the given error, it returns the appropriate text value
+ */
 const ageValidationMsg = computed(() => {
   if (
     form.value.get('age').touched &&
@@ -90,6 +102,12 @@ const ageValidationMsg = computed(() => {
   return '';
 });
 
+/**
+ * onSubmit() method check if form group and name control is valid
+ * and if it is form group and name control are reset
+ * if not markAllAsTouched() method is called to set all controls as touched
+ * and check it validity
+ */
 function onSumbit() {
   if (nameControl.value.valid && form.value.valid) {
     acceptAll.value = false;
