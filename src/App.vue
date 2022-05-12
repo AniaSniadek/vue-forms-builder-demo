@@ -187,8 +187,6 @@ function onSumbit() {
 </template>
 
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@500;700&display=swap');
-
 body {
   margin: 0;
   box-sizing: border-box;
