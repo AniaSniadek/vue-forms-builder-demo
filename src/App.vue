@@ -1,6 +1,7 @@
 <script setup>
 import { ref, computed, watch } from 'vue';
 import { FormBuilder, Validators } from 'vue-forms-builder';
+import { CustomValidators } from './custom-validators/CustomValidators.js';
 
 const PHONE_PATTERN = new RegExp('^[0-9]{9}$');
 
@@ -28,6 +29,7 @@ const nameControl = ref(
     Validators.required,
     Validators.minLength(3),
     Validators.maxLength(15),
+    CustomValidators.noWhiteSpace,
   ])
 );
 
@@ -61,6 +63,9 @@ const nameValidationMsg = computed(() => {
     }
     case nameControl.value.error['maxLength']: {
       return 'The given name is too long';
+    }
+    case nameControl.value.error['noWhiteSpace']: {
+      return 'White space is not allowed';
     }
     default: {
       return '';
