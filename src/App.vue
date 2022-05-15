@@ -4,6 +4,7 @@ import { FormBuilder, Validators } from 'vue-forms-builder';
 import { CustomValidators } from './custom-validators/CustomValidators.js';
 
 const PHONE_PATTERN = new RegExp('^[0-9]{9}$');
+const ANIMALS = ['dog', 'cat', 'fish'];
 
 /**
  * Create form group using FormBuilder.
@@ -20,6 +21,7 @@ const form = ref(
     age: [null, [Validators.min(0), Validators.max(100)]],
   })
 );
+
 /**
  * Create form control using FormBuilder.
  * Here we just need to add value and validators (optionaly)
@@ -32,8 +34,21 @@ const nameControl = ref(
     CustomValidators.noWhiteSpace,
   ])
 );
+/**
+ * Create form array using FormBuilder.
+ * We need to add array of FormControl/FormGroup/FormArray
+ */
+const formArray = ref(FormBuilder.array(createAnimalsFormArray()));
 
 const acceptAll = ref(false);
+let selectedAnimals = ref([]);
+
+/**
+ * Function for creating animals FormControl array for FormArray
+ */
+function createAnimalsFormArray() {
+  return ANIMALS.map(() => FormBuilder.control(false));
+}
 
 /**
  * Watcher for listening on acceptAll value change.
@@ -108,6 +123,19 @@ const ageValidationMsg = computed(() => {
 });
 
 /**
+ * Check selected animals from form array and push it to array of selected animals
+ */
+function checkSelectedAnimals() {
+  selectedAnimals.value = [];
+  formArray.value.controls.forEach((control, index) => {
+    if (control.value) {
+      selectedAnimals.value.push(ANIMALS[index]);
+    }
+  });
+  formArray.value.reset();
+}
+
+/**
  * onSubmit() method check if form group and name control is valid
  * and if it is form group and name control are reset
  * if not markAllAsTouched() method is called to set all controls as touched
@@ -122,6 +150,8 @@ function onSumbit() {
     nameControl.value.markAsTouched();
     form.value.markAllAsTouched();
   }
+
+  checkSelectedAnimals();
 }
 </script>
 
@@ -186,7 +216,16 @@ function onSumbit() {
           >
         </div>
       </div>
+      <div class="form__element form__element--array">
+        <div v-for="(animal, index) in ANIMALS" :key="index">
+          <input type="checkbox" v-model="formArray.controls[index].value" />
+          <label>{{ animal }}</label>
+        </div>
+      </div>
       <button class="form__button" type="submit">Send</button>
+      <div class="selected-animals" v-if="selectedAnimals.length">
+        Selected animals: {{ selectedAnimals }}
+      </div>
     </form>
   </div>
 </template>
@@ -240,6 +279,12 @@ body {
   font-size: 15px;
 }
 
+.form__element--array {
+  display: flex;
+  margin-top: 10px;
+  gap: 10px;
+}
+
 .form__error-checkbox {
   color: #c11f1f;
 }
@@ -258,6 +303,10 @@ body {
   font-size: 15px;
   color: #fff;
   box-shadow: 0 0 1px rgb(0 0 0 / 0%);
+  margin-top: 20px;
+}
+
+.selected-animals {
   margin-top: 20px;
 }
 </style>
