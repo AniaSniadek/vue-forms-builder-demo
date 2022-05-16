@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "vue": "^3.2.33",
-    "vue-forms-builder": "^0.2.0"
+    "vue-forms-builder": "^0.3.0"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^2.3.2",
